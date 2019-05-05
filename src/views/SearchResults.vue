@@ -5,8 +5,13 @@
     </p>
     <div v-else>
       <h1>Results for: "{{tag}}"</h1>
-      <ul class="image-card-grid">
+      
+      <ul v-if="!loading" class="image-card-grid">
         <image-card v-for="img in cleanImgs" :key="img.id" :img="img" />
+      </ul>
+
+      <ul v-else class="image-card-grid">
+        <image-card v-for="n in 6" :key="n" :loading="true" />
       </ul>
     </div>
   </div>
@@ -17,51 +22,55 @@ import flickr from '../flickr.js';
 import ImageCard from '@/components/ImageCard';
 
 export default {
-    name: 'home',
-    components: {
-      ImageCard
-    },
-    props: {
-      tag: String
-    },
-    created() {
+  name: 'searchResults',
+  components: {
+    ImageCard
+  },
+  props: {
+    tag: String
+  },
+  created() {
+    this.search();
+  },
+  watch: {
+    tag(value) {
       this.search();
-    },
-    watch: {
-      tag(value) {
-        this.search();
-      }
-    },
-    computed: {
-      cleanImgs() {
-        return this.images.filter(img => img.url_n)
-      }
-    },
-    data() {
-        return {
-            loading: false,
-            tag: '',
-            images: []
-        }
-    },
-    methods: {
-        search() {
-            this.loading = true;
-            this.fetchImages()
-            this.loading = false;
-        },
-        fetchImages() {
-            return flickr('photos.search', {
-                tags: this.tag,
-                extras: 'url_n, owner_name, description, date_taken, views',
-                page: 1,
-                per_page: 30
-            }).then((response) => {
-              console.log(response);
-              this.images = response.data.photos.photo;
-            });
-        },
     }
+  },
+  computed: {
+    isTagEmpty() {
+      return !this.tag || this.tag.length === 0;
+    },
+    cleanImgs() {
+      return this.images.filter(img => img.url_n)
+    }
+  },
+  data() {
+      return {
+          loading: false,
+          images: []
+      }
+  },
+  methods: {
+    search() {
+      if (!this.isTagEmpty) {
+        this.loading = true;
+        this.fetchImages();
+      }
+    },
+    fetchImages() {
+      return flickr('photos.search', {
+          tags: this.tag,
+          extras: 'url_n, owner_name, description, date_taken, views',
+          page: 1,
+          per_page: 30
+      }).then((response) => {
+        // console.log(response);
+        this.images = response.data.photos.photo;
+        this.loading = false;
+      });
+    },
+  }
 };
 </script>
 
