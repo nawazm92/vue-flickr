@@ -10,7 +10,7 @@ export default function flickr(method, params) {
             format: 'json',
             nojsoncallback: 1,
             ...params,
-            method: `flicker.${method}`,
+            method: `flickr.${method}`,
         }
     })
 }

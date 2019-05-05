@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper">
-    <p v-if="loading" class="text-centered loading">Loading<span>.</span><span>.</span><span>.</span></p>
+    <p v-if="loading" class="text-centered loading">
+      Loading<span>.</span><span>.</span><span>.</span>
+    </p>
     <div v-else>
       <h1>Results for: "{{tag}}"</h1>
       <ul class="image-card-grid">
@@ -10,7 +12,8 @@
   </div>
 </template>
 <script>
-import flickr from '../flickr';
+import flickr from '../flickr.js';
+
 import ImageCard from '@/components/ImageCard';
 
 export default {
@@ -22,7 +25,12 @@ export default {
       tag: String
     },
     created() {
-      this.search()
+      this.search();
+    },
+    watch: {
+      tag(value) {
+        this.search();
+      }
     },
     computed: {
       cleanImgs() {
@@ -49,7 +57,8 @@ export default {
                 page: 1,
                 per_page: 30
             }).then((response) => {
-              this.images = response.data.photos.photo
+              console.log(response);
+              this.images = response.data.photos.photo;
             });
         },
     }
