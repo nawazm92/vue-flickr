@@ -1,11 +1,21 @@
 <template>
-    <div class="wrapper">
-        <h1>Welcome to VueFlickrDemo</h1>
+    <div>
+        <hero-section
+            backgroundImage="homepage-hero.jpg"
+            title="Welcome to VueFlickrDemo"
+            subtitle="A simple photo app" />
+        <div class="wrapper">
+        </div>
     </div>
 </template>
 
 <script>
+import HeroSection from '@/components/HeroSection';
+
 export default {
-	name: 'home',
+    name: 'home',
+    components: {
+        HeroSection
+    }
 };
 </script>
